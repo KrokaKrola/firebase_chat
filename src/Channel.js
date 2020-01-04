@@ -4,13 +4,13 @@ import ChanelInfo from "./ChannelInfo";
 import Messages from "./Messages";
 import ChatInputBox from "./ChatInputBox";
 
-const Channel = ({ user }) => {
+const Channel = ({ user, channelId }) => {
   return (
     <div className="Channel">
       <div className="ChannelMain">
-        <ChanelInfo></ChanelInfo>
-        <Messages></Messages>
-        <ChatInputBox user={user}></ChatInputBox>
+        <ChanelInfo channelId={channelId} />
+        <Messages channelId={channelId} />
+        <ChatInputBox user={user} channelId={channelId} />
       </div>
       <Members />
     </div>
