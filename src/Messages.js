@@ -1,14 +1,35 @@
-import React from "react";
-import useCollection from "./UseCollection";
-import useDocWithCache from "./UseDocWithCache";
-import formatDate from "date-fns/format";
-import isSameDay from "date-fns/isSameDay";
+import React, { useEffect, useRef } from 'react';
+import useCollection from './UseCollection';
+import useDocWithCache from './UseDocWithCache';
+import formatDate from 'date-fns/format';
+import isSameDay from 'date-fns/isSameDay';
+
+function ChatScroller(props) {
+  const ref = useRef();
+  const shouldScrollRef = useRef(true);
+
+  useEffect(() => {
+    if (shouldScrollRef.current) {
+      const node = ref.current;
+      node.scrollTop = node.scrollHeight;
+    }
+  });
+
+  const handleScroll = () => {
+    const node = ref.current;
+    const { scrollTop, clientHeight, scrollHeight } = node;
+    const atBottom = scrollHeight === clientHeight + scrollTop;
+    shouldScrollRef.current = atBottom;
+  };
+
+  return <div {...props} ref={ref} onScroll={handleScroll} />;
+}
 
 const Messages = ({ channelId }) => {
-  const messages = useCollection(`chanels/${channelId}/messages`, "createdAt");
+  const messages = useCollection(`chanels/${channelId}/messages`, 'createdAt');
 
   return (
-    <div className="Messages">
+    <ChatScroller className="Messages">
       <div className="EndOfMessages">That's every message!</div>
       <div>
         {messages &&
@@ -32,7 +53,7 @@ const Messages = ({ channelId }) => {
             );
           })}
       </div>
-    </div>
+    </ChatScroller>
   );
 };
 
@@ -74,7 +95,7 @@ const AvatarMessage = ({ message, showDay }) => {
         <div className="Day">
           <div className="DayLine" />
           <div className="DayText">
-            {formatDate(message.createdAt.seconds * 1000, "do MMMM y")}
+            {formatDate(message.createdAt.seconds * 1000, 'do MMMM y')}
           </div>
           <div className="DayLine" />
         </div>
@@ -83,14 +104,14 @@ const AvatarMessage = ({ message, showDay }) => {
         <div
           className="Avatar"
           style={{
-            backgroundImage: author ? `url("${author.photoUrl}")` : ""
+            backgroundImage: author ? `url("${author.photoUrl}")` : ''
           }}
         />
         <div className="Author">
           <div>
-            <span className="UserName">{author && author.displayName}</span>{" "}
+            <span className="UserName">{author && author.displayName}</span>{' '}
             <span className="TimeStamp">
-              {formatDate(message.createdAt.seconds * 1000, "h:mm a")}
+              {formatDate(message.createdAt.seconds * 1000, 'h:mm a')}
             </span>
           </div>
           <div className="MessageContent">{message.text}</div>

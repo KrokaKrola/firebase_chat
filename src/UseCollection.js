@@ -1,14 +1,19 @@
-import { useEffect, useState } from "react";
-import { db } from "./firebase";
+import { useEffect, useState } from 'react';
+import { db } from './firebase';
 
-export default function(path, orderField) {
+export default function(path, orderField, where = []) {
   const [docs, setDocs] = useState([]);
 
+  const [queryField, queryOperator, queryValue] = where;
   useEffect(() => {
     let collection = db.collection(path);
 
     if (orderField) {
       collection = collection.orderBy(orderField);
+    }
+
+    if (queryField) {
+      collection = collection.where(queryField, queryOperator, queryValue);
     }
 
     collection.onSnapshot(snapshot => {
